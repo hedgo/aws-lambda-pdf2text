@@ -21,8 +21,6 @@ import java.util.Map;
 
 public class HandlerS3 implements RequestHandler<S3Event, String> {
 
-    //Lambda jest trigrowana przez wgranie pliku PDF na S3. Wtedy zmienia go na text i zapisuje w nowym katalogu.
-
     @Override
     public String handleRequest(S3Event event, Context context) {
         LambdaLogger logger = context.getLogger();
@@ -71,12 +69,10 @@ public class HandlerS3 implements RequestHandler<S3Event, String> {
     public static PutObjectResponse putS3Object(S3Client s3, String bucketName, String objectKey, String text) {
 
         try {
-            Map<String, String> metadata = new HashMap<>();
-            metadata.put("x-amz-meta-myVal", "test");
             PutObjectRequest putOb = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(objectKey)
-                    .metadata(metadata)
+                    .metadata(new HashMap<>())
                     .build();
 
             PutObjectResponse response = s3.putObject(putOb, RequestBody.fromString(text));
